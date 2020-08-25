@@ -1,38 +1,116 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Leaflet offline map</title>
-		<link rel="stylesheet" charset="utf-8" href="leaflet/leaflet.css" />
-		<script type="text/javascript" charset="utf-8" src="leaflet/leaflet.js"></script>
-		<script>
 
-    	// Leaflet
-			var map;
+<head>
+	<title>Leaflet offline map</title>
+	<link rel="stylesheet" charset="utf-8" href="leaflet/leaflet.css" />
+	<script type="text/javascript" charset="utf-8" src="leaflet/leaflet.js"></script>
+	<script>
+		// Leaflet
+		var map;
 
-			var cameras = [];
+		var cameras = [];
 
-			var markers = [];
+		var markers = [];
 
-			function onLoad() {
+		function onLoad() {
 
-				map = L.map('mapid').setView([50.00, 8.26], 16);
+			map = L.map('mapid').setView([50.00, 8.26], 16);
 
-				L.tileLayer('tiles/{z}/{x}/{y}.png',
-				{maxZoom: 18}).addTo(map);
+			// uncomment this to use openstreetmap.de tiles instead of self rendered tiles
+			// have a look at the usage policy beforehand https://www.openstreetmap.de/germanstyle.html
+
+			/*
+			L.tileLayer('https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png', {
+				maxZoom: 18,
+				attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+			}).addTo(map);
+			*/
+
+
+			// offline tiles in ./tiles/z/x/y
+			L.tileLayer('tiles/{z}/{x}/{y}.png', {
+				maxZoom: 18
+			}).addTo(map);
+
+		}
+	</script>
+
+	<script type="text/javascript" src="map_helper.js"></script>
+	<script type="text/javascript" src="csv_reader.js"></script>
+
+
+	<script>
+		// this depends on both arrays "cameras" and "markers" having the same order
+
+		var currentId = 0;
+
+		var currentCamera = cameras[0];
+
+		// keypresses for cycling through markers
+		document.onkeydown = checkKey;
+
+		function checkKey(e) {
+
+			var camerasCount = cameras.length;
+
+			e = e || window.event;
+
+
+			if (e.keyCode == '38') {
+				// up arrow
+			} else if (e.keyCode == '40') {
+				// down arrow
+			} else if (e.keyCode == '37') {
+				// left arrow
+
+				console.log("PREVIOUS CAM");
+
+
+				if (currentId == 0) {
+					// move to end of array when pos 0 is reached
+					currentId = camerasCount - 1;
+				} else {
+					currentId -= 1;
+				}
+
+				focusView(currentId);
+
+
+
+
+
+			} else if (e.keyCode == '39') {
+				// right arrow
+
+				console.log("NEXT CAM");
+
+
+				if (currentId == camerasCount - 1) {
+					// move to start of array when last position is reached
+					currentId = 0;
+				} else {
+					currentId += 1;
+				}
+
+				focusView(currentId);
+
+
 
 			}
 
-		</script>
-
-		<script type="text/javascript" src="map_helper.js"></script>
-		<script type="text/javascript" src="csv_reader.js"></script>
-
-	</head>
+		}
+	</script>
 
 
-	<body onload="onLoad();">
-		<div id="mapid" style="height: 500px;"></div>
-		<input type="file" id="csvFileInput" onchange="handleFiles(this.files)"
-            accept=".csv">
-	</body>
+
+
+</head>
+
+
+<body onload="onLoad();">
+	<div id="mapid" style="height: 500px;"></div>
+	<input type="file" id="csvFileInput" onchange="handleFiles(this.files)" accept=".csv">
+</body>
+
 </html>

@@ -30,4 +30,21 @@ function populateMap(cameras) {
     );
   }
 
+  focusView(0);
+}
+
+function focusView(positionInCamerasArray) {
+  console.log("focusViewID: " + positionInCamerasArray);
+  var camera = cameras[positionInCamerasArray];
+  var marker = markers[positionInCamerasArray];
+
+  var lat = marker.getLatLng().lat;
+  var lon = marker.getLatLng().lng;
+
+  marker.openPopup()
+  map.setZoom(16);
+  map.panTo([lat, lon]);
+
+
+
 }

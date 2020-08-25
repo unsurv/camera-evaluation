@@ -1,10 +1,10 @@
 function handleFiles(files) {
   // Check for the various File API support.
   if (window.FileReader) {
-      // FileReader are supported.
-      getAsText(files[0]);
+    // FileReader are supported.
+    getAsText(files[0]);
   } else {
-      alert('FileReader are not supported in this browser.');
+    alert('FileReader are not supported in this browser.');
   }
 }
 
@@ -24,22 +24,22 @@ function loadHandler(event) {
 
 function processData(csv) {
 
-    cameras = [];
+  cameras = [];
 
-    var allTextLines = csv.split(/\r\n|\n/);
-    // i = 1 ignores column desciption
-    for (var i = 1; i < allTextLines.length; i++) {
-        var data = allTextLines[i].split(',');
-            var camera = [];
-            for (var j=0; j < data.length; j++) {
-                camera.push(data[j]);
-            }
-
-            if (camera.length > 5) {
-              // cameras is defined in main html
-              cameras.push(camera);
-            }
+  var allTextLines = csv.split(/\r\n|\n/);
+  // i = 1 ignores column desciption
+  for (var i = 1; i < allTextLines.length; i++) {
+    var data = allTextLines[i].split(',');
+    var camera = [];
+    for (var j = 0; j < data.length; j++) {
+      camera.push(data[j]);
     }
+
+    if (camera.length > 5) {
+      // cameras is defined in main html
+      cameras.push(camera);
+    }
+  }
 
   populateMap(cameras);
 
@@ -48,7 +48,7 @@ function processData(csv) {
 }
 
 function errorHandler(evt) {
-  if(evt.target.error.name == "NotReadableError") {
-      alert("Canno't read file !");
+  if (evt.target.error.name == "NotReadableError") {
+    alert("Canno't read file !");
   }
 }
