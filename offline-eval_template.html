@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Leaflet offline map</title>
+		<link rel="stylesheet" charset="utf-8" href="leaflet/leaflet.css" />
+		<script type="text/javascript" charset="utf-8" src="leaflet/leaflet.js"></script>
+		<script>
+
+    	// Leaflet
+			var map;
+
+			var cameras = [];
+
+			var markers = [];
+
+			function onLoad() {
+
+				map = L.map('mapid').setView([50.00, 8.26], 16);
+
+				L.tileLayer('tiles/{z}/{x}/{y}.png',
+				{maxZoom: 18}).addTo(map);
+
+			}
+
+		</script>
+
+		<script type="text/javascript" src="map_helper.js"></script>
+		<script type="text/javascript" src="csv_reader.js"></script>
+
+	</head>
+
+
+	<body onload="onLoad();">
+		<div id="mapid" style="height: 500px;"></div>
+		<input type="file" id="csvFileInput" onchange="handleFiles(this.files)"
+            accept=".csv">
+	</body>
+</html>
