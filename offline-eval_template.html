@@ -2,16 +2,25 @@
 <html>
 
 <head>
-	<title>Leaflet offline map</title>
+	<title>unsurv eval</title>
+	<link rel="shortcut icon" type="image/png" href="favicon.png">
+
 	<link rel="stylesheet" charset="utf-8" href="leaflet/leaflet.css" />
 	<script type="text/javascript" charset="utf-8" src="leaflet/leaflet.js"></script>
+
+
+
+
 	<script>
 		// Leaflet
 		var map;
 
 		var cameras = [];
-
 		var markers = [];
+
+		var osmCameras = [];
+		var osmMarkers = [];
+
 
 		function onLoad() {
 
@@ -25,12 +34,11 @@
 				maxZoom: 18,
 				attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 			}).addTo(map);
+
 			*/
 
-
 			// offline tiles in ./tiles/z/x/y
-			L.tileLayer('tiles/{z}/{x}/{y}.png', {
-				maxZoom: 18
+			L.tileLayer('tiles/{z}/{x}/{y}.png', maxZoom: 18
 			}).addTo(map);
 
 		}
@@ -41,7 +49,6 @@
 
 
 	<script>
-
 		// moves through given markers via arrow keys
 		// this depends on both arrays "cameras" and "markers" having the same order
 
@@ -132,35 +139,72 @@
 	</script>
 
 	<script>
+		function downloadCsv() {
+			var csv = 'TYPE,AREA,DIRECTION,MOUNT,HEIGHT,ANGLE,THUMBNAIL,IMAGE,LAT,LON,UPLOAD\n';
+			var data = cameras;
+
+			data.forEach(function(row) {
+				csv += row.join(',');
+				csv += "\n";
+			});
+
+			console.log(csv);
+			var hiddenElement = document.createElement('a');
+			hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+			hiddenElement.target = '_blank';
+			hiddenElement.download = Math.random().toString(36).substr(2, 5) + '.csv';
+			hiddenElement.click();
+		}
+	</script>
+
+	<script>
+		// download osm cameras from overpass-api.de
+		// this data is helpful for determining whether a datapoint already exists in the OSM database
+
+		// https://overpass-api.de/api/interpreter?data=[out:json];node[man_made=surveillance](52.5082248,13.3780064,52.515041,13.3834472);out;
+
+		function downloadOsmData() {
+
+			var mapBounds = map.getBounds();
+			var latitudeDistance = Math.abs(mapBounds.getSouth() - mapBounds.getNorth());
+			var longitudeDistance = Math.abs(mapBounds.getWest() - mapBounds.getEast());
+			console.log(latitudeDistance);
+			console.log(longitudeDistance);
+
+			if (latitudeDistance < 0.1 && longitudeDistance < 0.2) { // latitudeDistance ~ 10 km, // longitudeDistance changes with latitude
+				var area = [mapBounds.getSouth(), mapBounds.getWest(), mapBounds.getNorth(), mapBounds.getEast()];
+				console.log(area.toString());
+
+				fetch("https://overpass-api.de/api/interpreter?data=[out:json];node[man_made=surveillance](" + area.toString() + ");out meta;")
+					.then(response => response.json())
+					.then(data => {
+						console.log(data.elements[0]);
+
+						osmCameras = data.elements;
+
+						populateMap(osmCameras, true);
+
+					});
+
+			} else {
+				alert("Please decrease mapsize!");
+			}
 
 
-
-function download_csv() {
-    var csv = 'TYPE,AREA,DIRECTION,MOUNT,HEIGHT,ANGLE,THUMBNAIL,IMAGE,LAT,LON,UPLOAD\n';
-		var data = cameras;
-		
-    data.forEach(function(row) {
-            csv += row.join(',');
-            csv += "\n";
-    });
-
-    console.log(csv);
-    var hiddenElement = document.createElement('a');
-    hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
-    hiddenElement.target = '_blank';
-    hiddenElement.download = Math.random().toString(36).substr(2, 5) + '.csv';
-    hiddenElement.click();
-}
-</script>
+		}
+	</script>
 
 
 </head>
 
 
 <body onload="onLoad();">
-	<div id="mapid" style="height: 500px;"></div>
-	<input type="file" id="csvFileInput" onchange="handleFiles(this.files)" accept=".csv">
-	<button onclick="download_csv()">Download CSV</button>
+	<div id="mapid" style="height: 600px;"></div>
+	<div><input type="file" id="csvFileInput" onchange="handleFiles(this.files)" accept=".csv"></div>
+	<div><button onclick="downloadCsv()">EXPORT CSV</button></div>
+	<div><button onclick="downloadOsmData()">Download OSM</button></div>
+
+
 </body>
 
 </html>

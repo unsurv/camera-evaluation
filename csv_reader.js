@@ -45,7 +45,7 @@ function processData(csv) {
   }
 
   // add markers
-  populateMap(cameras);
+  populateMap(cameras, false);
 
 }
 
