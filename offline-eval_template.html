@@ -111,9 +111,6 @@
 				focusView(currentId);
 
 
-
-
-
 			} else if (e.keyCode == '39') {
 				// right arrow
 
@@ -129,14 +126,32 @@
 
 				focusView(currentId);
 
-
-
 			}
 
 		}
 	</script>
 
+	<script>
 
+
+
+function download_csv() {
+    var csv = 'TYPE,AREA,DIRECTION,MOUNT,HEIGHT,ANGLE,THUMBNAIL,IMAGE,LAT,LON,UPLOAD\n';
+		var data = cameras;
+		
+    data.forEach(function(row) {
+            csv += row.join(',');
+            csv += "\n";
+    });
+
+    console.log(csv);
+    var hiddenElement = document.createElement('a');
+    hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+    hiddenElement.target = '_blank';
+    hiddenElement.download = Math.random().toString(36).substr(2, 5) + '.csv';
+    hiddenElement.click();
+}
+</script>
 
 
 </head>
@@ -145,6 +160,7 @@
 <body onload="onLoad();">
 	<div id="mapid" style="height: 500px;"></div>
 	<input type="file" id="csvFileInput" onchange="handleFiles(this.files)" accept=".csv">
+	<button onclick="download_csv()">Download CSV</button>
 </body>
 
 </html>
