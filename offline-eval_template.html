@@ -41,6 +41,8 @@
 
 
 	<script>
+
+		// moves through given markers via arrow keys
 		// this depends on both arrays "cameras" and "markers" having the same order
 
 		var currentId = 0;
@@ -59,8 +61,40 @@
 
 			if (e.keyCode == '38') {
 				// up arrow
+				console.log("+++APPROVED+++");
+
+				console.log(cameras[currentId]);
+
+				// add 1 at end of chosen camera array to indicate ok for upload
+				if (cameras[currentId].length == 10) {
+
+					// hasn't been checked before
+					cameras[currentId].push("1");
+					redrawMarker(currentId);
+				} else {
+					cameras[currentId][10] = "1";
+					redrawMarker(currentId);
+				}
+
+
+				console.log(cameras[currentId]);
+
 			} else if (e.keyCode == '40') {
 				// down arrow
+				console.log("---DO NOT UPLOAD---");
+
+
+				// add 0 at end of chosen camera array to indicate do not upload
+				if (cameras[currentId].length == 10) {
+
+					// hasn't been checked before
+					cameras[currentId].push("0");
+					redrawMarker(currentId);
+				} else {
+					cameras[currentId][10] = "0";
+					redrawMarker(currentId);
+				}
+
 			} else if (e.keyCode == '37') {
 				// left arrow
 

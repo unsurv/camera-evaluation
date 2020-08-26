@@ -27,24 +27,26 @@ function processData(csv) {
   cameras = [];
 
   var allTextLines = csv.split(/\r\n|\n/);
-  // i = 1 ignores column desciption
+  // i = 1 ignores header desciption
   for (var i = 1; i < allTextLines.length; i++) {
+    // individual values
     var data = allTextLines[i].split(',');
+
     var camera = [];
     for (var j = 0; j < data.length; j++) {
       camera.push(data[j]);
     }
 
+    // don't add empty lines etc
     if (camera.length > 5) {
       // cameras is defined in main html
       cameras.push(camera);
     }
   }
 
+  // add markers
   populateMap(cameras);
 
-  console.log(cameras);
-  console.log(markers);
 }
 
 function errorHandler(evt) {
