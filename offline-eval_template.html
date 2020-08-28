@@ -6,6 +6,8 @@
 	<link rel="shortcut icon" type="image/png" href="favicon.png">
 
 	<link rel="stylesheet" charset="utf-8" href="leaflet/leaflet.css" />
+	<link rel="stylesheet" charset="utf-8" href="eval.css" />
+
 	<script type="text/javascript" charset="utf-8" src="leaflet/leaflet.js"></script>
 
 
@@ -38,7 +40,8 @@
 			*/
 
 			// offline tiles in ./tiles/z/x/y
-			L.tileLayer('tiles/{z}/{x}/{y}.png', maxZoom: 18
+			L.tileLayer('tiles/{z}/{x}/{y}.png', {
+				maxZoom: 18
 			}).addTo(map);
 
 		}
@@ -138,71 +141,19 @@
 		}
 	</script>
 
-	<script>
-		function downloadCsv() {
-			var csv = 'TYPE,AREA,DIRECTION,MOUNT,HEIGHT,ANGLE,THUMBNAIL,IMAGE,LAT,LON,UPLOAD\n';
-			var data = cameras;
-
-			data.forEach(function(row) {
-				csv += row.join(',');
-				csv += "\n";
-			});
-
-			console.log(csv);
-			var hiddenElement = document.createElement('a');
-			hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
-			hiddenElement.target = '_blank';
-			hiddenElement.download = Math.random().toString(36).substr(2, 5) + '.csv';
-			hiddenElement.click();
-		}
-	</script>
-
-	<script>
-		// download osm cameras from overpass-api.de
-		// this data is helpful for determining whether a datapoint already exists in the OSM database
-
-		// https://overpass-api.de/api/interpreter?data=[out:json];node[man_made=surveillance](52.5082248,13.3780064,52.515041,13.3834472);out;
-
-		function downloadOsmData() {
-
-			var mapBounds = map.getBounds();
-			var latitudeDistance = Math.abs(mapBounds.getSouth() - mapBounds.getNorth());
-			var longitudeDistance = Math.abs(mapBounds.getWest() - mapBounds.getEast());
-			console.log(latitudeDistance);
-			console.log(longitudeDistance);
-
-			if (latitudeDistance < 0.1 && longitudeDistance < 0.2) { // latitudeDistance ~ 10 km, // longitudeDistance changes with latitude
-				var area = [mapBounds.getSouth(), mapBounds.getWest(), mapBounds.getNorth(), mapBounds.getEast()];
-				console.log(area.toString());
-
-				fetch("https://overpass-api.de/api/interpreter?data=[out:json];node[man_made=surveillance](" + area.toString() + ");out meta;")
-					.then(response => response.json())
-					.then(data => {
-						console.log(data.elements[0]);
-
-						osmCameras = data.elements;
-
-						populateMap(osmCameras, true);
-
-					});
-
-			} else {
-				alert("Please decrease mapsize!");
-			}
-
-
-		}
-	</script>
-
-
 </head>
 
 
 <body onload="onLoad();">
-	<div id="mapid" style="height: 600px;"></div>
-	<div><input type="file" id="csvFileInput" onchange="handleFiles(this.files)" accept=".csv"></div>
-	<div><button onclick="downloadCsv()">EXPORT CSV</button></div>
-	<div><button onclick="downloadOsmData()">Download OSM</button></div>
+	<div id="mapid" style="height: 750px;"></div>
+	<div>
+		<p>Import your csv and navigate your cameras via the arrow keys. <br>
+			You can download existing OSM data via the button below. <br>
+			LEFT / RIGHT cycles through cameras, UP approves for upload, DOWN stops the data from being uploaded to OSM.</p>
+	</div>
+	<div><input style="margin: 20px;" type="file" id="csvFileInput" onchange="handleFiles(this.files)" accept=".csv"></div>
+	<div><button class="button" onclick="downloadOsmData()">Download OSM</button></div>
+	<div><button class="button" onclick="downloadCsv()">EXPORT APPROVALS</button></div>
 
 
 </body>
