@@ -43,6 +43,8 @@ function processData(csv) {
       cameras.push(camera);
     }
   }
+  
+  console.log(cameras)
 
   // add markers
   populateMap(cameras, false);

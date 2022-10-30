@@ -31,18 +31,21 @@
 			// uncomment this to use openstreetmap.de tiles instead of self rendered tiles
 			// have a look at the usage policy beforehand https://www.openstreetmap.de/germanstyle.html
 
-			/*
+			
 			L.tileLayer('https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png', {
-				maxZoom: 18,
+				maxZoom: 22,
 				attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 			}).addTo(map);
 
-			*/
-
+			
+            
+            /*
 			// offline tiles in ./tiles/z/x/y
 			L.tileLayer('tiles/{z}/{x}/{y}.png', {
 				maxZoom: 18
 			}).addTo(map);
+			
+			*/
 
 		}
 	</script>
@@ -76,13 +79,13 @@
 				console.log(cameras[currentId]);
 
 				// add 1 at end of chosen camera array to indicate ok for upload
-				if (cameras[currentId].length == 10) {
+				if (cameras[currentId].length == 12) {
 
 					// hasn't been checked before
 					cameras[currentId].push("1");
 					redrawMarker(currentId);
 				} else {
-					cameras[currentId][10] = "1";
+					cameras[currentId][12] = "1";
 					redrawMarker(currentId);
 				}
 
@@ -95,13 +98,13 @@
 
 
 				// add 0 at end of chosen camera array to indicate do not upload
-				if (cameras[currentId].length == 10) {
+				if (cameras[currentId].length == 12) {
 
 					// hasn't been checked before
 					cameras[currentId].push("0");
 					redrawMarker(currentId);
 				} else {
-					cameras[currentId][10] = "0";
+					cameras[currentId][12] = "0";
 					redrawMarker(currentId);
 				}
 

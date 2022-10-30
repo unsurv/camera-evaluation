@@ -62,7 +62,7 @@ function populateMap(camerasToShow, osm) {
       markers.push(csvMarker);
       csvMarker.bindPopup(
         "<b>camera</b><br>" +
-        "<img style=\"width:100px;\" src=export/captures/" + imgPath + "><br>" +
+        // "<img style=\"width:100px;\" src=export/captures/" + imgPath + "><br>" +
         "lat:" + lat + "<br>" +
         "lat:" + lon + "<br>" +
         "status:"
@@ -114,9 +114,9 @@ function redrawMarker(positionInCamerasArray) {
   var status = "";
   var len = camera.length;
 
-  if (len == 10) {
+  if (len == 12) {
     status = "unknown";
-  } else if (camera[10] == "1") {
+  } else if (camera[12] == "1") {
     // status has been set before
     status = "<br><p style=\"color:blue;\">+++APPROVED+++</p>";
 
@@ -128,7 +128,7 @@ function redrawMarker(positionInCamerasArray) {
 
   marker.setPopupContent(
     "<b>camera</b><br>" +
-    "<img style=\"width:100px;\" src=export/captures/" + imgPath + "><br>" +
+    // "<img style=\"width:100px;\" src=export/captures/" + imgPath + "><br>" +
     "lat:" + lat + "<br>" +
     "lat:" + lon + "<br>" +
     "status:" + status
@@ -208,7 +208,7 @@ function downloadCsv() {
     console.log(row);
 
     // camera has been approved by user
-    if (row[10] == "1") {
+    if (row[12] == "1") {
 
       var processedRow = "";
 
