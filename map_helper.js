@@ -200,7 +200,7 @@ function downloadCsv() {
   console.log(mounts["0"]);
 
   // var csv = 'TYPE,AREA,DIRECTION,MOUNT,HEIGHT,ANGLE,THUMBNAIL,IMAGE,LAT,LON,surveillance,UPLOAD\n';
-  var csv = '\"camera:type\",\"surveillance\",\"camera:direction\",\"camera:mount\",\"height\",\"camera:angle\",\"image\",\"latitude\",\"longitude\",\"surveillance:type\",\"man_made\"\n';
+  var csv = '\"camera:type\",\"surveillance\",\"camera:direction\",\"camera:mount\",\"height\",\"camera:angle\", \"latitude\",\"longitude\",\"surveillance:type\",\"man_made\"\n';
 
   var data = cameras;
 
@@ -248,10 +248,15 @@ function downloadCsv() {
       }
 
       // angle
-      processedRow += row[5] + ",";
-
+      if (row[5] != "-1") {
+        processedRow += row[2] + ",";
+      } else {
+        processedRow += "" + ",";
+      }
+	
+      // skip images for now
       // imageUrl
-      processedRow += "https://unsurv.org/" + row[6] + ",";
+      //processedRow += "https://unsurv.org/" + row[6] + ",";
 
       // latitude
       processedRow += row[8] + ",";
@@ -261,7 +266,7 @@ function downloadCsv() {
       processedRow += row[9] + ",";
 
       // surveillance
-      processedRow += "camera";
+      processedRow += "camera" + ",";
       // man_made
       processedRow += "surveillance";
 
